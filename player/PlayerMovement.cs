@@ -1,34 +1,29 @@
+
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
-{
+public class PlayerMovement : MonoBehaviour
+{   
 
-    public float playerVelocity = 10f;
-    public CharacterController controller;
-
+    private CharacterController controller;
+    private Vector3 playerVelocity;
+    [SerializeField] private float speed = 10f;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    void Start() {
+        controller = GetComponent<CharacterController>();
+    }   
+
+
+    public void Move(Vector2 input) {
+        Vector3 moveDirection = Vector3.zero;
+        moveDirection.x = input.x;
+        moveDirection.z = input.y;
+
+        controller.Move(transform.TransformDirection(moveDirection) * speed * Time.fixedDeltaTime);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 moveDirection =  transform.right * x + transform.forward * z;
-
-        controller.Move(moveDirection * playerVelocity * Time.deltaTime);
-
-        
-    }
-
     
 }
