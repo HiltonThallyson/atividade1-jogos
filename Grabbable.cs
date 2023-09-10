@@ -18,4 +18,8 @@ public class Grabbable : MonoBehaviour {
         Debug.Log("Dropped " + gameObject);
     }
 
+    public void GrabAmmo() {
+        Debug.Log("Grabbed ammo!!");
+    }
+
 }
