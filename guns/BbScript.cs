@@ -33,5 +33,14 @@ public class BbScript : MonoBehaviour
 
             rb.AddForce(magnusForce);
     }
+
+    private void OnCollisionEnter(Collision other) {
+        if(other.collider.tag != "bb") {
+            Destroy(gameObject);
+        }
+        if(other.collider.tag == "Target") {
+            Destroy(other.gameObject);
+        }
+    }
 }
 
