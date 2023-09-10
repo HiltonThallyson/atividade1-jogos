@@ -2,6 +2,7 @@ using System;
 using GunNamespace;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -13,20 +14,22 @@ public class PlayerInteractions : MonoBehaviour {
     [SerializeField] private LayerMask grabLayerMask;
 
     private GunScript gunScript;
-    private AmmoScript ammoScript;
+    // private AmmoScript ammoScript;
 
 
     public void Grab() {
         if(Physics.Raycast(raycastOriginPoint.position, raycastOriginPoint.forward, out RaycastHit hit, interactionDistance, grabLayerMask, QueryTriggerInteraction.Ignore)) {
-            if(hit.collider.TryGetComponent(out Grabbable grabbable) && heldObject == null) {
+            if(hit.collider.TryGetComponent(out Grabbable grabbable) ) {
                 Debug.Log("Type = " + grabbable.GetType());
-                if(grabbable is IGun) {
+                if(grabbable is IGun && heldObject == null) {
                     grabbable.Grab();
                     heldObject = grabbable;
                     gunScript = heldObject.GetComponent<GunScript>();
-                }else if(grabbable is IAmmo) {
+                    gunScript.GrabGun();
+                }else if(grabbable is AmmoScript) {
                     grabbable.GrabAmmo();
-                    ammoScript = grabbable.GetComponent<AmmoScript>();
+                    Debug.Log(grabbable);
+                    // ammoScript = grabbable.GetComponent<AmmoScript>();
                 }else {
                     Debug.Log("Something went wrong");
                 }
@@ -55,13 +58,17 @@ public class PlayerInteractions : MonoBehaviour {
         if(heldObject != null) {
             heldObject.Drop();
             heldObject = null;
+            gunScript.DropGun();
             gunScript = null;
         }
             
         
     }
-    public void GrabAmmo() {
-        Debug.Log("Got ammo...");
+
+    public void AdjustHopUp(InputAction.CallbackContext context) {
+        if(heldObject != null) {
+            gunScript.AdjustHopUP(context.action.ReadValue<float>()/1000);
+        }
     }
 
     public void Reload()

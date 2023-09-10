@@ -1,3 +1,4 @@
+using GunNamespace;
 using UnityEngine;
 
 public class Grabbable : MonoBehaviour {
@@ -19,7 +20,9 @@ public class Grabbable : MonoBehaviour {
     }
 
     public void GrabAmmo() {
-        Debug.Log("Grabbed ammo!!");
+        // gameObject.SetActive(false);
+        GunScript gunScript =  gunContainer.GetComponentInChildren<GunScript>();
+        gunScript?.SetUpCartridge(gameObject.GetComponent<IAmmo>());
     }
 
 }

@@ -6,55 +6,49 @@ namespace GunNamespace
 
     
         public class AmmoScript : Grabbable, IAmmo
-        {   
-            // [SerializeField]
-            // private GameObject bb;
-            // private int numberOfBullets;
-        
-            // [SerializeField] private int bulletsCapacity;
-            // private GunTypes ammoType;
-        
-            // private void setUpAmmo()
-            // {
-            //     bulletsCapacity = 20;
-            //     ammoType = GunTypes.Assault;
-            //     numberOfBullets = bulletsCapacity;
-            // }
+        {
 
-            // public int getAmmoLeft() {
-            //     return numberOfBullets;
-            // }
-
-            // public void reduceAmmo() {
-            //     if(numberOfBullets > 0) {
-            //         numberOfBullets--;
-            //     }
-            // }
-
-        
-
-            // public void rechargeAmmo() {
-            //     Debug.Log("Rechargindg...");
-            //     numberOfBullets = bulletsCapacity;
-            // }
-            // // Start is called before the first frame update
-            // void Start()
-            // {
-            //     setUpAmmo();
-            // }
-
-    
-
-            // // Update is called once per frame
-            // void Update()
-            // {
-        
-            // }
-
-            public void PrintAmmo()
-            {
-                Debug.Log("Printing ammo");
-            }
+       [SerializeField] private int ammoCapacity;
+        private int ammoLeft;
+        [SerializeField] private AmmoType ammoType;
+        // private BbScript bbScript;
+        [SerializeField] private GameObject bb;
+        private void Start() {
+            ammoLeft = ammoCapacity;
         }
+
+        private void Awake() {
+        }
+
+        public GameObject GetBB() {
+            return bb;
+        } 
+        
+        public int GetAmmoCapacity()
+        {
+            return ammoCapacity;
+        }
+
+        public int GetAmmoLeft()
+        {
+            return ammoLeft;
+        }
+
+        public AmmoType GetAmmoType()
+        {
+            return ammoType;
+        }
+
+        
+        public void DropAmmo()
+        {
+            Destroy(gameObject);
+        }
+
+        public void DecreaseAmmo()
+        {
+            ammoLeft--;
+        }
+    }
     
 }

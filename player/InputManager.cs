@@ -9,6 +9,7 @@ public class InputManager : MonoBehaviour {
     private InputAction onReload;
     private InputAction onSwitchFireMode;
     private InputAction onShoot;
+    private InputAction onHopUpAdjustment;
     private PlayerMovement playerMovement;
     private PlayerInteractions playerInteractions;
 
@@ -22,6 +23,7 @@ public class InputManager : MonoBehaviour {
         onReload = playerInput.Play.Reload;
         onSwitchFireMode = playerInput.Play.Mode;
         onShoot = playerInput.Play.Shoot;
+        onHopUpAdjustment = playerInput.Play.Scroll;
         playerMovement = GetComponent<PlayerMovement>();
         playerInteractions = GetComponent<PlayerInteractions>();
 
@@ -30,6 +32,7 @@ public class InputManager : MonoBehaviour {
         onReload.performed += ctx => playerInteractions.Reload();
         onShoot.started += ctx => playerInteractions.StartFiring();
         onShoot.canceled += ctx => playerInteractions.StopFiring();
+        onHopUpAdjustment.performed += ctx => playerInteractions.AdjustHopUp(ctx);
         onSwitchFireMode.performed += ctx => playerInteractions.SwitchFireMode();
     }
     private void FixedUpdate() {
@@ -44,6 +47,7 @@ public class InputManager : MonoBehaviour {
         onDrop.Enable();
         onReload.Enable();
         onShoot.Enable();
+        onHopUpAdjustment.Enable();
         onSwitchFireMode.Enable();
     }
 
@@ -53,6 +57,7 @@ public class InputManager : MonoBehaviour {
         onDrop.Disable();
         onReload.Disable();
         onShoot.Disable();
+        onHopUpAdjustment.Disable();
         onSwitchFireMode.Disable();
     }
 

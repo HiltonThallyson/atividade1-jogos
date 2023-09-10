@@ -1,24 +1,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 namespace GunNamespace
 {
 
     public class GunScript : Grabbable, IGun
     {
-        [SerializeField]
-        private GameObject cartridgePrefab;
         public Transform location;
         [SerializeField]
         private int numberOfBullets;
+
+        [SerializeField] private TMP_Text ammoLeftText;
+        [SerializeField] private TMP_Text ammoMassText;
+
+        private GameObject bb;
         public GunTypes gunType;
-        private AmmoScript ammoScript;
+        private IAmmo ammo;
+        [SerializeField] private AmmoType ammoType;
+
         [SerializeField]
         private float forcaDaMola = 1.2f;
         private float motorRotation;
         [SerializeField]
-        private float backSpin = 0.02f;
+        private float hopup = 0.02f;
         private FireMode currentFireMode; 
         public enum FireMode
         {
@@ -50,13 +56,22 @@ namespace GunNamespace
             }
         }
 
+        void Awake()
+        {   
+            SetUpGun();
+            ammoLeftText.SetText(numberOfBullets.ToString());
+            ammoMassText.SetText("0.0g");
+        }
+
         public void SetUpGun() {
             currentFireMode = GetFireMode();
+            ammoType = GetAmmoType();
             motorRotation = motorRotations[currentFireMode];
             numberOfBullets = 0; 
             rapidFireWait = new WaitForSeconds(1/motorRotation);
         }
 
+        
         private FireMode GetFireMode() {
             if(gunType is GunTypes.Pistol or GunTypes.Shotgun) {
                 rapidFire = false;
@@ -66,16 +81,36 @@ namespace GunNamespace
                 return FireMode.SemiAuto;
             }
         }
+
+        public void DropGun() {
+            ammoLeftText.SetText("0");
+            ammoMassText.SetText("0.0g");
+        }
+
+        public void GrabGun() {
+            if(ammo != null) {
+                ammoLeftText.SetText(numberOfBullets.ToString());
+                ammoMassText.SetText((ammo.GetBB().GetComponent<Rigidbody>().mass*1000).ToString() + "g");
+            }
+            
+        }
+
+        public void AdjustHopUP(float value) {
+            hopup += value;
+            Debug.Log("HopUp =" + hopup);
+        }
     
         public void Shoot()
         {
             if(numberOfBullets > 0) {
+                ammo.DecreaseAmmo();
                 numberOfBullets --;
+                ammoLeftText.SetText(numberOfBullets.ToString());
                 Vector3 pontoInstanciacao = location.position;
-                GameObject instantiatedBB = Instantiate(cartridgePrefab, pontoInstanciacao, location.rotation);
+                GameObject instantiatedBB = Instantiate(bb, pontoInstanciacao, location.rotation);
                 Rigidbody bbRigidBody = instantiatedBB.GetComponent<Rigidbody>();
 
-                instantiatedBB.GetComponent<BbScript>().setBackSpin(backSpin);
+                instantiatedBB.GetComponent<BbScript>().setBackSpin(hopup);
 
                 if (bbRigidBody != null)
                 {
@@ -84,6 +119,8 @@ namespace GunNamespace
                 }
             }
         }
+
+       
 
         
         public void SwitchFireMode() 
@@ -105,13 +142,38 @@ namespace GunNamespace
             rapidFireWait = new WaitForSeconds(1/motorRotation);
         }
 
-        public void ReloadGun() {
-            numberOfBullets = 60; 
+        public AmmoType GetAmmoType() {
+            return gunType switch
+            {
+                GunTypes.Pistol => AmmoType.Pistol,
+                GunTypes.Shotgun => AmmoType.Shotgun,
+                GunTypes.Assault => AmmoType.Assault,
+                _ => AmmoType.Unknown,
+            };
         }
 
-        void Awake()
-        {   
-            SetUpGun();
+        public void ReloadGun() {
+            if(ammo != null) {
+                numberOfBullets = ammo.GetAmmoCapacity();
+                ammoLeftText.SetText(numberOfBullets.ToString());
+                bb = ammo.GetBB();
+            }
+             
         }
+
+        
+
+        public void SetUpCartridge(IAmmo cartridge)
+        {
+            if(cartridge.GetAmmoType() == ammoType) {
+                ammo = cartridge;
+                
+                ammoMassText.SetText((ammo.GetBB().GetComponent<Rigidbody>().mass*1000).ToString() + "g");
+                ReloadGun();
+            }
+            
+        }
+
+        
     }
 }
