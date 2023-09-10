@@ -80,7 +80,7 @@ namespace GunNamespace
                 if (bbRigidBody != null)
                 {
                     Vector3 gunDirection = location.forward;
-                    bbRigidBody.AddForce(gunDirection * forcaDaMola, ForceMode.Impulse);
+                    bbRigidBody.AddForce(gunDirection * forcaDaMola);
                 }
             }
         }

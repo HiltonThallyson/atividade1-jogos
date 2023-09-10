@@ -60,10 +60,6 @@ public class PlayerInteractions : MonoBehaviour {
             
         
     }
-
-    public void RapidFire() {
-
-    }
     public void GrabAmmo() {
         Debug.Log("Got ammo...");
     }

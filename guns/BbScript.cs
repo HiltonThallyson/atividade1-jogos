@@ -33,9 +33,9 @@ public class BbScript : MonoBehaviour
             
             Vector3 magnusDirection = Vector3.Cross(rb.velocity, transform.right).normalized;
 
-            Vector3 magnusForce = Mathf.Sqrt(rb.velocity.magnitude) * magnusDirection * backspin * Time.fixedDeltaTime;
+            Vector3 magnusForce = Mathf.Sqrt(rb.velocity.magnitude) * magnusDirection * backspin/100 * Time.fixedDeltaTime;
             rb.AddForce(magnusForce);
-
+            Debug.Log("BB speed = " + rb.velocity.magnitude);
             
         
 
