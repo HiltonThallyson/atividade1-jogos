@@ -39,7 +39,6 @@ public class PlayerInteractions : MonoBehaviour {
     public void StartFiring() {
         if(heldObject != null && heldObject is IGun) {
             GunScript gunScript = heldObject.GetComponent<GunScript>();
-            // gunScript.Shoot();
             fireCoroutine = StartCoroutine(gunScript.RapidFire());
         }
         
@@ -84,13 +83,6 @@ public class PlayerInteractions : MonoBehaviour {
             Debug.Log("Switching fire mode...");
         }
 
-    }
-
-    public void Shoot() {
-        if(heldObject != null && heldObject is IGun) {
-            GunScript gunScript = heldObject.GetComponent<GunScript>();
-            gunScript.Shoot();
-        }
     }
 
     private void OnDrawGizmos() {
